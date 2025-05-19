@@ -106,6 +106,8 @@ def change_scene(new_state):
         game_won = False
         game_over = False
     elif new_state == "intro":
+        glClearColor(0.1, 0.1, 0.1, 1.0)
+        glColor3f(1.0, 1.0, 1.0)
         # tüm müziği durdur ve KUŞ SESİ oynat
         mixer.music.stop()
         play_intro_music()
@@ -157,7 +159,13 @@ def draw_skybox():
     glDepthMask(GL_TRUE)
     glEnable(GL_LIGHTING)
 
+# Intro sahnesi çizimi
+def draw_skybox_faces(): pass  # placeholder for brevity    
+
 def draw_intro_scene():
+    # Arka plan ve renk durumu reset
+    glClearColor(0.1, 0.1, 0.1, 1.0)
+    glColor3f(1.0, 1.0, 1.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     front = get_front_vector()
@@ -236,6 +244,22 @@ def draw_intro_scene():
     dz = player_pos[1] + 1.8
     if dx*dx + dz*dz < 1.0**2:
         change_scene("temple")
+
+    if score > 0:  # Only display if a temple run has been completed.
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT)
+        glMatrixMode(GL_MODELVIEW)
+        glPushMatrix()
+        glLoadIdentity()
+        glColor3f(1, 1, 0)  # Yellow for visibility
+        msg = f"Son Skor: {score}"
+        draw_text(WINDOW_WIDTH // 2 - len(msg) * 9 // 2, WINDOW_HEIGHT - 50, msg)
+        glPopMatrix()
+        glMatrixMode(GL_PROJECTION)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)    
 
     glutSwapBuffers()
 
