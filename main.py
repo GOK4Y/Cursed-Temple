@@ -12,6 +12,10 @@ from pygame import mixer
 pygame.init()
 mixer.init()
 
+# -----------------------------------------------------------------------------
+# AUDIO FUNCTIONS
+# -----------------------------------------------------------------------------
+
 def play_intro_music():
     """Play bird sounds in the intro scene."""
     mixer.music.load('birds.wav')       # replace with your bird sound file
@@ -34,6 +38,10 @@ def change_music():
     mixer.music.play(-1, 0.0)
 
 play_intro_music()
+
+# -----------------------------------------------------------------------------
+# GLOBAL SETTINGS & STATE
+# -----------------------------------------------------------------------------
 
 GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE
 
@@ -62,6 +70,10 @@ texture_ids = {}
 portal_music_played = False
 scene_state = "intro"
 
+# -----------------------------------------------------------------------------
+# TEXTURE LOADING & SUPPORT
+# -----------------------------------------------------------------------------
+
 def check_anisotropic_support():
     try:
         max_aniso = glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
@@ -87,6 +99,10 @@ def load_texture(name, path):
     except Exception as e:
         print(f"Error loading texture {name}: {e}")
 
+# -----------------------------------------------------------------------------
+# SCENE MANAGEMENT
+# -----------------------------------------------------------------------------
+
 def change_scene(new_state):
     global scene_state, player_pos, yaw, pitch, start_time, score, objects, portal_music_played, game_won, game_over
     scene_state = new_state
@@ -108,7 +124,7 @@ def change_scene(new_state):
     elif new_state == "intro":
         glClearColor(0.1, 0.1, 0.1, 1.0)
         glColor3f(1.0, 1.0, 1.0)
-        # tüm müziği durdur ve KUŞ SESİ oynat
+        # stop all music and play BIRD SOUND
         mixer.music.stop()
         play_intro_music()
         player_pos[:] = [0.0, 0.0]
@@ -119,38 +135,42 @@ def change_scene(new_state):
         game_won = False
         game_over = False
 
+# -----------------------------------------------------------------------------
+# RENDERING FUNCTIONS
+# -----------------------------------------------------------------------------
+
 def draw_skybox():
     glDisable(GL_LIGHTING)
     glDepthMask(GL_FALSE)
     glBindTexture(GL_TEXTURE_2D, texture_ids['sky'])
     size = 50.0
     glBegin(GL_QUADS)
-    # Ön yüz
+    # Front Face
     glTexCoord2f(0.0, 0.0); glVertex3f(-size, -size, -size)
     glTexCoord2f(1.0, 0.0); glVertex3f( size, -size, -size)
     glTexCoord2f(1.0, 1.0); glVertex3f( size,  size, -size)
     glTexCoord2f(0.0, 1.0); glVertex3f(-size,  size, -size)
-    # Arka yüz
+    # Back Face
     glTexCoord2f(0.0, 0.0); glVertex3f( size, -size,  size)
     glTexCoord2f(1.0, 0.0); glVertex3f(-size, -size,  size)
     glTexCoord2f(1.0, 1.0); glVertex3f(-size,  size,  size)
     glTexCoord2f(0.0, 1.0); glVertex3f( size,  size,  size)
-    # Sol yüz
+    # Left Face
     glTexCoord2f(0.0, 0.0); glVertex3f(-size, -size,  size)
     glTexCoord2f(1.0, 0.0); glVertex3f(-size, -size, -size)
     glTexCoord2f(1.0, 1.0); glVertex3f(-size,  size, -size)
     glTexCoord2f(0.0, 1.0); glVertex3f(-size,  size,  size)
-    # Sağ yüz
+    # Right Face
     glTexCoord2f(0.0, 0.0); glVertex3f( size, -size, -size)
     glTexCoord2f(1.0, 0.0); glVertex3f( size, -size,  size)
     glTexCoord2f(1.0, 1.0); glVertex3f( size,  size,  size)
     glTexCoord2f(0.0, 1.0); glVertex3f( size,  size, -size)
-    # Üst yüz
+    # Top Face
     glTexCoord2f(0.0, 0.0); glVertex3f(-size,  size, -size)
     glTexCoord2f(1.0, 0.0); glVertex3f( size,  size, -size)
     glTexCoord2f(1.0, 1.0); glVertex3f( size,  size,  size)
     glTexCoord2f(0.0, 1.0); glVertex3f(-size,  size,  size)
-    # Alt yüz
+    # Bottom Face
     glTexCoord2f(0.0, 0.0); glVertex3f(-size, -size,  size)
     glTexCoord2f(1.0, 0.0); glVertex3f( size, -size,  size)
     glTexCoord2f(1.0, 1.0); glVertex3f( size, -size, -size)
@@ -159,11 +179,10 @@ def draw_skybox():
     glDepthMask(GL_TRUE)
     glEnable(GL_LIGHTING)
 
-# Intro sahnesi çizimi
 def draw_skybox_faces(): pass  # placeholder for brevity    
 
 def draw_intro_scene():
-    # Arka plan ve renk durumu reset
+    # Background and color status reset
     glClearColor(0.1, 0.1, 0.1, 1.0)
     glColor3f(1.0, 1.0, 1.0)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -398,6 +417,10 @@ def draw_text(x, y, text):
     for ch in text:
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(ch))
 
+# -----------------------------------------------------------------------------
+# GAME LOGIC
+# -----------------------------------------------------------------------------
+
 def check_collisions():
     global score, game_won
     if scene_state != "temple":
@@ -456,6 +479,10 @@ def keyboard(key, x, y):
     player_pos[0] = max(-limit, min(limit, player_pos[0]))
     player_pos[1] = max(-limit, min(limit, player_pos[1]))
     check_collisions()
+
+# -----------------------------------------------------------------------------
+# OPENGL INITIALIZATION & WINDOW SETUP
+# -----------------------------------------------------------------------------
 
 def init():
     global start_time, objects
