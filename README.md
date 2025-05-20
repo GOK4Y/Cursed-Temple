@@ -51,7 +51,11 @@ Oyuncular skorlarını diledikleri kadar tekrar deneyebilirler.
 
 
 GRUP ÜYELERİ :
+
 Turan Balta - 22120205023
+
 Gökay Demirbaş - 22120205069
+
 Eymen Arapoğlu - 22120205070
+
 Yusuf Üveys Kaplan - 22120205037
