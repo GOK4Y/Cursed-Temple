@@ -7,15 +7,25 @@
 Aşağıdaki Python kütüphaneleri kullanılmıştır:
 
 Kullanılan Modüller :
+
 import sys
+
 import time
+
 import random
+
 import math
+
 from PIL import Image
+
 from OpenGL.GL import *
+
 from OpenGL.GLU import *
+
 from OpenGL.GLUT import *
+
 import pygame
+
 from pygame import mixer
 
 
